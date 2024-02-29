@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Customer - Clinic Admin')" />
+<body>
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <div>
+        <h2>Manage Customer</h2>
+        <a th:href="@{/customers/new}">Create new customer</a>
+        <a th:href="@{/customers/export/excel}">Export to Excel</a>
+    </div>
+
+    <div th:if="${message != null}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+
+    <div th:replace="fragments :: search_form('/customers/page/1')" />
+
+    <div>
+        <table class="table table-bordered table-striped table-hover table-responsive-xl">
+            <thead class="thead-dark">
+            <tr>
+                <th th:replace="fragments :: customer_column_link('id', 'User ID')" />
+                <th>Photos</th>
+                <th>Phone Number</th>
+                <th>Gender</th>
+                <th>Date Of Birth</th>
+                <th>Address</th>
+                <th th:replace="fragments :: customer_column_link('email', 'E-mail')" />
+<!--                <th th:replace="fragments :: customer_column_link('firstName', 'First Name')" />-->
+<!--                <th th:replace="fragments :: customer_column_link('lastName', 'Last Name')" />-->
+                <th>Name</th>
+                <th>Enabled</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="customer : ${listCustomers}">
+                <td>[[${customer.id}]]</td>
+                <td>
+                    <span th:if="${customer.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+                    <img th:if="${customer.photos != null}" th:src="@{${customer.photosImagePath}}"
+                         style="width: 100px" />
+                </td>
+                <td>[[${customer.phoneNumber}]]</td>
+                <td>[[${customer.gender}]]</td>
+                <td>[[${customer.dateOfBirth}]]</td>
+                <td>[[${customer.addressLine}]]</td>
+                <td>[[${customer.email}]]</td>
+                <td th:text="${customer.lastName + ' ' + customer.firstName}"></td>
+                <td>
+                    <div th:replace="fragments :: customer_status" />
+                </td>
+
+                <td>
+                    <div th:replace="fragments :: customer_action" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:replace="fragments :: pagination('/customers', 'customers')"></div>
+    </div>
+
+    <div th:replace="modal_fragments :: confirm_modal" />
+
+    <div th:replace="fragments :: footer"></div>
+
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    moduleURL = "[[@{/customers}]]";
+    $(document).ready(function() {
+        $(".link-delete").on("click", function(e) {
+            e.preventDefault();
+            showDeleteConfirmModal($(this), 'customer');
+        });
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Appointment - Clinic Admin')" />
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div>
+    <h2>Invoice</h2>
+    <a th:href="@{/invoices/appointment/download/{id}(id=${appointment.id})}">Export invoice</a>
+
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h3>Patient Details</h3>
+      <p><strong>Full Name:</strong> <span th:text="${appointment.customer.lastName + ' ' + appointment.customer.firstName}"></span></p>
+      <p><strong>Email:</strong> <span th:text="${appointment.customer.email}"></span></p>
+      <p><strong>Address:</strong> <span th:text="${appointment.customer.addressLine}"></span></p>
+    </div>
+    <div class="col-md-6">
+      <h3>&nbsp;</h3>
+      <p><strong>Date of Birth:</strong> <span th:text="${#dates.format(appointment.customer.dateOfBirth, 'dd/MM/yyyy')}"></span></p>
+      <p><strong>Gender:</strong> <span th:text="${appointment.customer.gender}"></span></p>
+      <p><strong>Phone Number:</strong> <span th:text="${appointment.customer.phoneNumber}"></span></p>
+    </div>
+  </div>
+
+
+  <div class="full-details">
+
+    <div th:if="${appointment?.status?.name() == 'APPROVAL'}">
+<!--      <button  type="button" th:data-appointment-id="${appointment.id}" onclick="selectServices(this.getAttribute('data-appointment-id'))">Select Service</button>-->
+      <button type="button" th:data-appointment-id="${appointment.id}" onclick="selectServices(this.getAttribute('data-appointment-id'))" style="background-color: #4CAF50; color: white; padding: 10px 16px; border: none; border-radius: 3px; cursor: pointer; font-size: 14px;">Select Service</button>
+
+    </div>
+<!--    <button  type="button" th:data-appointment-id="${appointment.id}" onclick="selectServices(this.getAttribute('data-appointment-id'))">Select Service</button>-->
+
+    <table class="table table-bordered table-striped table-hover table-responsive-xl">
+      <thead class="thead-dark">
+      <tr>
+
+
+        <!--        </th>-->
+        <th>Name</th>
+        <th>Total Amount Of Session</th>
+        <th>Price</th>
+
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="customerService : ${appointment.customerServices}">
+
+
+
+        <td>[[${customerService.service.name}]]</td>
+        <td>[[${customerService.totalAmount}]]</td>
+        <td>[[${customerService.service.price}]]</td>
+
+
+
+
+      </tr>
+      <tr class="total">
+        <td colspan="2"></td> <!-- Span over the first two columns -->
+        <td>Total: <span th:text="${totalPrice}">50 PLN</span></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="modal fade" id="detailModal">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+
+
+<!--          <div class="modal-footer">-->
+<!--            <button type="button" class="btn btn-default" id="btnAssignService">Add Service</button>-->
+<!--            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
+<!--          </div>-->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div th:replace="modal_fragments :: confirm_modal" />
+
+  <div th:replace="fragments :: footer"></div>
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+  moduleURL = "[[@{/appointments}]]";
+  appointmentModuleURL= "[[@{/appointments}]]";
+
+  // $(document).ready(function() {
+  //   $(".link-delete").on("click", function(e) {
+  //     e.preventDefault();
+  //     showDeleteConfirmModal($(this), 'appointment');
+  //   });
+  //
+  //
+  //   // $("#customerServiceForm").submit(function(event) {
+  //   //   event.preventDefault(); // Prevent default form submission
+  //   //   var formData = $(this).serialize(); // Serialize form data
+  //   //   var csrfToken = $("input[name='_csrf']").val();
+  //   //   // $.ajax({
+  //   //   //   url: $(this).attr('action'), // or directly '@{/appointments/customerservice/save}'
+  //   //   //   type: 'POST',
+  //   //   //   data: formData,
+  //   //   //   contentType: "application/json",
+  //   //   //   beforeSend: function(xhr) {
+  //   //   //     xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken); // Include CSRF token as header
+  //   //   //   },
+  //   //   //
+  //   //   //   success: function (response) {
+  //   //   //     console.log('success');
+  //   //   //     // if(response.status === 'success') {
+  //   //   //     //   // Redirect to the URL provided in the response
+  //   //   //     //   window.location.href = "/ClinicAdmin/appointments/" + appointmentId + "/customerservice/view";
+  //   //   //     // }
+  //   //   //     if(response === 'OK'){
+  //   //   //       window.location.href = "/ClinicAdmin/appointments/" + appointmentId + "/customerservice/view";
+  //   //   //     }
+  //   //   //   },
+  //   //   //   error: function (response) {
+  //   //   //     console.log('failed');
+  //   //   //     console.log(response);
+  //   //   //   }
+  //   //   //
+  //   //   //
+  //   //   // });
+  //   //   var headers = {};
+  //   //   headers['X-CSRF-TOKEN'] = csrfToken;
+  //   //   $.post({
+  //   //     url: $(this).attr('action'),
+  //   //     data: formData,
+  //   //     headers: headers
+  //   //   }).done(function(response) {
+  //   //     if (response.status === 'success') {
+  //   //       window.location.href = "/ClinicAdmin/appointments/" + appointmentId + "/customerservice/view";
+  //   //     } else {
+  //   //       showErrorModal("Unknown response from server");
+  //   //     }
+  //   //   })
+  //   // });
+  //
+  //   $("#customerServiceForm").submit(function(event) {
+  //     event.preventDefault(); // Prevent the default form submission via the browser.
+  //
+  //     var formData = $(this).serialize(); // Serialize the form data for the AJAX request.
+  //     var csrfToken = $("input[name='_csrf']").val(); // Retrieve the CSRF token from the form.
+  //
+  //     // Perform the AJAX post request.
+  //     $.ajax({
+  //       url: $(this).attr('action'), // The URL to which the request is sent.
+  //       type: 'POST',
+  //       data: formData,
+  //       headers: {
+  //         'X-CSRF-TOKEN': csrfToken // Include the CSRF token as a header.
+  //       },
+  //       success: function(response) {
+  //         // The response should include the redirectUrl.
+  //         if (response.redirectUrl) {
+  //           // Redirect the browser to the URL provided in the response.
+  //           window.location.href = response.redirectUrl;
+  //         } else {
+  //           // Handle any case where the response does not include a redirectUrl.
+  //           console.error('No redirect URL provided in the response.');
+  //         }
+  //       },
+  //       error: function(jqXHR, textStatus, errorThrown) {
+  //         // Handle any errors that occur during the request.
+  //         console.error('AJAX request failed: ' + textStatus, errorThrown);
+  //       }
+  //     });
+  //   });
+  // });
+
+  $(document).on('submit', '#customerServiceForm', function(event) {
+    event.preventDefault(); // Prevent the default form submission via the browser.
+    var formData = $(this).serialize(); // Serialize the form data for the AJAX request.
+    var csrfToken = $("input[name='_csrf']").val(); // Retrieve the CSRF token from the form.
+
+    // Perform the AJAX post request.
+    $.ajax({
+      url: $(this).attr('action'), // The URL to which the request is sent.
+      type: 'POST',
+      data: formData,
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token as a header.
+      },
+      success: function(response) {
+        // The response should include the redirectUrl.
+        if (response.redirectUrl) {
+          // Redirect the browser to the URL provided in the response.
+          window.location.href = response.redirectUrl;
+        } else {
+          // Handle any case where the response does not include a redirectUrl.
+          console.error('No redirect URL provided in the response.');
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        // Handle any errors that occur during the request.
+        console.error('AJAX request failed: ' + textStatus, errorThrown);
+      }
+    });
+  });
+
+
+  function selectServices(appointmentId){
+    console.log("Appointment ID:", appointmentId);
+    //$('#detailModal').modal();
+    //alert(appointmentId);
+    loadService(appointmentId);
+  }
+
+
+  function loadService(appointmentId){
+    linkDetailURL = appointmentModuleURL + "/" + appointmentId + "/customerservice/new";
+    //alert(url);
+
+    $("#detailModal").modal("show").find(".modal-content").load(linkDetailURL);
+  }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Services - Services Admin')" />
+<body>
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <div>
+        <h2>Manage Services</h2>
+
+        <a th:href="@{/services/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
+        <a th:href="@{/services/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+
+    </div>
+
+    <div th:replace="fragments :: search_form('/services/page/1')" />
+
+    <div class="full-details">
+        <table class="table table-bordered table-striped table-hover table-responsive-xl">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Service Image</th>
+                <th>
+                    <a class="text-white" th:href="@{'/services/page/' + ${currentPage} + '?sortField=' + ${sortField} + '&sortDir=' + ${reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">Service Name</a>
+                    <span th:class="${reverseSortDir == 'desc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}" ></span>
+                </th>
+                <th>Specialization</th>
+                <th>Price</th>
+                <th>Created Date</th>
+                <th>Created By</th>
+                <th>Modified Date</th>
+                <th>Modified By</th>
+                <th>Enabled</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ser : ${listServices}">
+                <td>[[${ser.id}]]</td>
+                <td>
+                    <img th:src="@{${ser.imagePath}}" style="width: 100px" class="img-fluid"/>
+                </td>
+                <td>[[${ser.name}]]</td>
+                <td>[[${ser.specialization.name}]]</td>
+                <td>[[${ser.price}]]</td>
+
+                <td>[[${ser.createdDate}]]</td>
+                <td>[[${ser.createdBy}]]</td>
+                <td>[[${ser.modifiedDate}]]</td>
+                <td>[[${ser.modifiedBy}]]</td>
+                <td>
+                    <div th:replace="fragments :: service_status" />
+                </td>
+                <td>
+                    <div th:replace="fragments :: service_actions" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="fragments :: pagination('/services', 'services')"></div>
+
+    <div th:replace="modal_fragments :: confirm_modal" />
+
+    <div th:replace="fragments :: footer"></div>
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    moduleURL = "[[@{/services}]]";
+
+    $(document).ready(function() {
+        $(".link-delete").on("click", function(e) {
+            e.preventDefault();
+            showDeleteConfirmModal($(this), 'service');
+        });
+    });
+</script>
+</body>
+</html>

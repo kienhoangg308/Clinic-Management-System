@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Clinic', 'none')">
+  <style>
+    /* Style for the team title */
+    h1 {
+      color: #0056b3; /* Retain the blue color for headers */
+      font-size: 36px; /* Retain the increased font size for better visibility */
+      font-weight: bold; /* Retain bold font weight for emphasis */
+      text-align: center; /* Centered text for headers */
+      margin-bottom: 30px; /* Retain the increased bottom margin */
+    }
+
+    /* Improve the paragraph text styling for better readability */
+    div > text {
+      color: #333333; /* Retain the dark grey color for better contrast */
+      font-size: 20px; /* Retain the larger font size for body text */
+      line-height: 1.8; /* Increase line spacing for better readability */
+      text-align: center; /* Center align the text */
+      font-family: 'Arial', sans-serif; /* Switch to Arial for a more standard look */
+      margin-bottom: 30px; /* Retain the space below the text */
+      padding: 0; /* Remove padding */
+      background-color: transparent; /* Remove background color */
+      border: none; /* Remove borders */
+    }
+
+    /* Retain the card styles as they were */
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+      border-radius: 5px; /* 5px rounded corners */
+    }
+
+    .card-body {
+      padding: 2px 16px;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    .col-md-3.m-3 {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: header_menu"></div>
+  <div>
+    <h1>Đội ngũ bác sĩ</h1>
+  </div>
+
+  <div>
+    <p>Với góc nhìn thấu cảm chuyên sâu và thiết thực đối với từng bệnh nhân, chúng tôi luôn xây dựng và hình thành các giải pháp Chăm sóc - Điều trị tối ưu nhất cho từng bệnh nhân nhằm giúp bệnh nhân cải thiện cuộc sống tốt đẹp hơn.</p>
+  </div>
+
+
+
+  <div class="row align-items-center justify-content-center" style="margin-top: 50px">
+
+
+    <div class="col-md-3 m-3" th:each="doctor : ${listDoctors}">
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" th:src="@{${doctor.photosImagePath}}" alt="Card image cap">
+        <div class="card-body text-center">
+          <h5 class="card-title"><span th:text="${doctor.degree + ' ' + doctor.lastName +' ' +doctor.firstName}"> Name
+                            Lastname</span></h5>
+          <p
+             th:text="${ doctor.specialization}">Specialization</p>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div th:replace="navigation :: footer_menu"></div>
+</div>
+
+
+</body>
+</html>
+
+<body>
+

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Record - Clinic Admin')" />
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div style="text-align: center;">
+    <h2>Record</h2>
+<!--    <a th:href="@{/appointments/download/{id}(id=${appointment.id})}">Export invoice</a>-->
+    <a th:href="@{/records/download/{recordId}(recordId=${record.id})}">Export record</a>
+
+
+  </div>
+
+  <div style="display: flex; justify-content: center;"> <!-- This will center the row content -->
+    <div class="row mb-4" style="width: 80%;"> <!-- Adjust width as needed -->
+      <div class="col-md-6" style="text-align: left;">
+      <p><strong>Full Name:</strong> <span th:text="${appointment.customer.lastName + ' ' + appointment.customer.firstName}"></span></p>
+      <p><strong>Email:</strong> <span th:text="${appointment.customer.email}"></span></p>
+      <p><strong>Address:</strong> <span th:text="${appointment.customer.addressLine}"></span></p>
+      <p><strong>Doctor:</strong> <span th:text="${appointment.doctor.lastName + ' ' + appointment.doctor.firstName}"></span></p>
+      <p><strong>Diagnose:</strong> <span th:text="${record.diagnose}"></span></p>
+    </div>
+      <div class="col-md-6" style="text-align: left;">
+      <p><strong>Date of Birth:</strong> <span th:text="${#dates.format(appointment.customer.dateOfBirth, 'dd/MM/yyyy')}"></span></p>
+      <p><strong>Gender:</strong> <span th:text="${appointment.customer.gender}"></span></p>
+      <p><strong>Phone Number:</strong> <span th:text="${appointment.customer.phoneNumber}"></span></p>
+    </div>
+    </div>
+  </div>
+
+
+  <div class="full-details" style="width: 80%; margin: 0 auto;"> <!-- Adjust width as needed and auto margin for centering -->
+    <table class="table table-bordered table-striped table-hover table-responsive-xl" style="width: 100%; margin: 0 auto;"> <!-- 100% width to fit container -->
+      <colgroup>
+        <col span="1" style="width: 70%;">
+        <col span="1" style="width: 30%;">
+      </colgroup>
+      <thead class="thead-dark">
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="service : ${record.services}">
+        <td style="padding: 5px;">[[${service.name}]]</td>
+        <td style="padding: 5px;">[[${service.price}]]</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="modal fade" id="detailModal">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+
+
+          <!--          <div class="modal-footer">-->
+          <!--            <button type="button" class="btn btn-default" id="btnAssignService">Add Service</button>-->
+          <!--            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
+          <!--          </div>-->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+<!--  <div th:replace="modal_fragments :: confirm_modal" />-->
+
+<!--  <div th:replace="fragments :: footer"></div>-->
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+
+
+
+</script>
+</body>
+</html>

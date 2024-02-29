@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
+
+  <title>[[${pageTitle}]]</title>
+
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+  <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" ></script>
+  <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" ></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div>
+    <h2>Manage Record | [[${pageTitle}]]</h2>
+
+  </div>
+
+  <form th:action="@{/records/save}" method="post" style="max-width: 500px; margin: 0 auto"
+        enctype="multipart/form-data" th:object="${record}"
+        onsubmit="return checkServiceAvailability(this);">
+    <input type="hidden" th:field="*{id}" />
+    <input type="hidden" class="form-control" name="appointment" th:value="${appointment.id}" required minlength="3" maxlength="128" />
+
+    <input type="hidden" id="customer_id" th:value="${customer.id}" />
+    <div class="border border-secondary rounded p-3">
+
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Select one or more services:</label>
+        <div class="col-sm-8">
+          <select class="form-control" th:field="*{services}" multiple required
+                  style="resize: vertical; height: 200px">
+            <th:block th:each="service : ${listServices}">
+              <option th:value="${service.id}">[[${service.name}]]</option>
+            </th:block>
+
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Diagnose:</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" th:field="*{diagnose}" required minlength="2" maxlength="80"  />
+        </div>
+      </div>
+
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Chosen services:</label>
+        <div class="col-sm-8">
+
+          <div id="chosenServices">
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="text-center">
+        <input type="submit" value="Save" class="btn btn-primary m-3" />
+        <input type="button" value="Cancel" class="btn btn-secondary" id="buttonCancel" />
+      </div>
+    </div>
+  </form>
+
+  <div th:replace="modal_fragments :: modal_dialog"></div>
+
+  <div th:replace="fragments :: footer"></div>
+
+</div>
+<script type="text/javascript">
+  moduleURL = "[[@{/invoices}]]";
+
+  $(document).ready(function() {
+    dropdownServices = $("#services");
+    divChosenServices = $("#chosenServices");
+
+    dropdownServices.change(function() {
+      divChosenServices.empty();
+      showChosenServices();
+    });
+
+
+  });
+
+
+  function checkServiceAvailability(form) {
+    var url = "[[@{/records/check_availability}]]"; // Thymeleaf will replace this with the server URL
+    selectedServices = $("#services").val(); // Assuming this is the id of your select box
+    csrfValue = $("input[name='_csrf']").val();
+    customerId = $("#customer_id").val();
+    console.log(selectedServices);
+    console.log(customerId);
+
+    var params = {customerId: customerId, services: selectedServices.join(','), _csrf: csrfValue};
+
+    $.get(url, params, function(response) {
+      if (response === "OK") {
+        form.submit();
+      } else if (response === "Unavailable") {
+        showWarningModal("One or more selected services do not have any remaining sessions.");
+      } else {
+        showErrorModal("Unknown response from server");
+      }
+    }).fail(function() {
+      showErrorModal("Could not connect to the server");
+    });
+
+    return false; // Prevent the form from submitting synchronously
+  }
+
+  function showChosenServices() {
+    dropdownServices.children("option:selected").each(function() {
+      selectedService = $(this);
+      serId = selectedService.val();
+      serName = selectedService.text();
+
+      //alert(serId + ' : ' + serName);
+
+
+      divChosenServices.append("<span class='badge badge-secondary m-1'>" + serName + "</span>");
+    });
+
+  }
+
+</script>
+<script th:src="@{/js/common_form.js}"></script>
+</body>
+</html>

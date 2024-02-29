@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head  />
+<body>
+<div class="container-fluid">
+  <div>
+    <h2>Invoice</h2>
+
+  </div>
+
+<!--  <div class="row mb-4">-->
+<!--    <div class="col-md-6">-->
+<!--      <h3>Patient Details</h3>-->
+<!--      <p><strong>Full Name:</strong> <span th:text="${appointment.customer.lastName + ' ' + appointment.customer.firstName}"></span></p>-->
+<!--      <p><strong>Email:</strong> <span th:text="${appointment.customer.email}"></span></p>-->
+<!--      <p><strong>Address:</strong> <span th:text="${appointment.customer.addressLine}"></span></p>-->
+<!--    </div>-->
+<!--    <div class="col-md-6">-->
+<!--      <h3>&nbsp;</h3>-->
+<!--      <p><strong>Date of Birth:</strong> <span th:text="${#dates.format(appointment.customer.dateOfBirth, 'dd/MM/yyyy')}"></span></p>-->
+<!--      <p><strong>Gender:</strong> <span th:text="${appointment.customer.gender}"></span></p>-->
+<!--      <p><strong>Phone Number:</strong> <span th:text="${appointment.customer.phoneNumber}"></span></p>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <div style="display: flex; justify-content: center;"> <!-- This will center the row content -->
+    <div class="row mb-4" style="width: 80%;"> <!-- Adjust width as needed -->
+      <div class="col-md-6" style="text-align: left;">
+        <p><strong>Full Name:</strong> <span th:text="${appointment.customer.lastName + ' ' + appointment.customer.firstName}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${appointment.customer.email}"></span></p>
+        <p><strong>Address:</strong> <span th:text="${appointment.customer.addressLine}"></span></p>
+        <p><strong>Doctor:</strong> <span th:text="${appointment.doctor.lastName + ' ' + appointment.doctor.firstName}"></span></p>
+
+      </div>
+      <div class="col-md-6" style="text-align: left;">
+        <p><strong>Date of Birth:</strong> <span th:text="${#dates.format(appointment.customer.dateOfBirth, 'dd/MM/yyyy')}"></span></p>
+        <p><strong>Gender:</strong> <span th:text="${appointment.customer.gender}"></span></p>
+        <p><strong>Phone Number:</strong> <span th:text="${appointment.customer.phoneNumber}"></span></p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="full-details" style="width: 80%; margin: 0 auto;"> <!-- Adjust width as needed and auto margin for centering -->
+    <table class="table table-bordered table-striped table-hover table-responsive-xl" style="width: 100%; margin: 0 auto;"> <!-- 100% width to fit container -->
+      <colgroup>
+        <col span="1" style="width: 70%;"/>
+        <col span="1" style="width: 30%;"/>
+      </colgroup>
+      <thead class="thead-dark">
+      <tr>
+        <th>Name</th>
+        <th>Total Amount Of Session</th>
+        <th>Price</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="customerService : ${appointment.customerServices}">
+
+
+
+        <td>[[${customerService.service.name}]]</td>
+        <td>[[${customerService.totalAmount}]]</td>
+        <td>[[${customerService.service.price}]]</td>
+
+
+
+
+      </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Staff - Clinic Admin')" />
+<body>
+<div class="container-fluid">
+    <div th:replace="navigation :: menu"></div>
+    <div>
+        <h2>Manage Staffs</h2>
+        <a th:href="@{/staffs/new}">Create new staff</a>
+        <a th:href="@{/staffs/export/excel}">Export to Excel</a>
+    </div>
+
+    <div th:if="${message != null}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+
+    <div th:replace="fragments :: search_form('/staffs/page/1')" />
+
+    <div>
+        <table class="table table-bordered table-striped table-hover table-responsive-xl">
+            <thead class="thead-dark">
+            <tr>
+                <th th:replace="fragments :: staff_column_link('id', 'User ID')" />
+                <th>Photos</th>
+                <th th:replace="fragments :: staff_column_link('email', 'E-mail')" />
+                <th th:replace="fragments :: staff_column_link('firstName', 'First Name')" />
+                <th th:replace="fragments :: staff_column_link('lastName', 'Last Name')" />
+                <th>Enabled</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${listUsers}">
+                <td>[[${user.id}]]</td>
+                <td>
+                    <span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
+                    <img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}"
+                         style="width: 100px" />
+                </td>
+                <td>[[${user.email}]]</td>
+                <td>[[${user.firstName}]]</td>
+                <td>[[${user.lastName}]]</td>
+                <td>
+                    <div th:replace="fragments :: staff_status" />
+                </td>
+
+                <td>
+                    <div th:replace="fragments :: staff_action" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:replace="fragments :: pagination('/staffs', 'staffs')"></div>
+    </div>
+
+    <div th:replace="modal_fragments :: confirm_modal" />
+
+    <div th:replace="fragments :: footer"></div>
+
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    moduleURL = "[[@{/staffs}]]";
+    $(document).ready(function() {
+        $(".link-delete").on("click", function(e) {
+            e.preventDefault();
+            showDeleteConfirmModal($(this), 'staff');
+        });
+    });
+
+
+</script>
+</body>
+</html>

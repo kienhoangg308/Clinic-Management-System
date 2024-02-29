@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Medical Record Entry</title>
+  <!-- Include your stylesheets and scripts -->
+</head>
+<body>
+<div class="container">
+  <h2>Enter Medical Record Details</h2>
+  <form th:action="@{/saveMedicalRecord}" method="post" id="medicalRecordForm">
+    <table class="table" id="medicalRecordTable">
+      <thead>
+      <tr>
+        <th>Medicine</th>
+        <th>Concentration</th>
+        <th>Dosage</th>
+        <th>Instructions</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Initial empty row -->
+      <tr>
+        <td><input type="text" name="medicineName[]"/></td>
+        <td><input type="text" name="concentration[]"/></td>
+        <td><input type="text" name="dosage[]"/></td>
+        <td><input type="text" name="instructions[]"/></td>
+        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <button type="button" onclick="addRow()">Add Row</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<script>
+  function addRow() {
+    var table = document.getElementById("medicalRecordTable").getElementsByTagName('tbody')[0];
+    var newRow = table.insertRow(table.rows.length);
+
+    var cell1 = newRow.insertCell(0);
+    var medicineInput = document.createElement("input");
+    medicineInput.type = "text";
+    medicineInput.name = "medicineName[]";
+    cell1.appendChild(medicineInput);
+
+    var cell2 = newRow.insertCell(1);
+    var concentrationInput = document.createElement("input");
+    concentrationInput.type = "text";
+    concentrationInput.name = "concentration[]";
+    cell2.appendChild(concentrationInput);
+
+    var cell3 = newRow.insertCell(2);
+    var dosageInput = document.createElement("input");
+    dosageInput.type = "text";
+    dosageInput.name = "dosage[]";
+    cell3.appendChild(dosageInput);
+
+    var cell4 = newRow.insertCell(3);
+    var instructionsInput = document.createElement("input");
+    instructionsInput.type = "text";
+    instructionsInput.name = "instructions[]";
+    cell4.appendChild(instructionsInput);
+
+    var cell5 = newRow.insertCell(4);
+    var removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function() { removeRow(this); };
+    cell5.appendChild(removeButton);
+  }
+
+  function removeRow(btn) {
+    var row = btn.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+  }
+</script>
+</body>
+</html>

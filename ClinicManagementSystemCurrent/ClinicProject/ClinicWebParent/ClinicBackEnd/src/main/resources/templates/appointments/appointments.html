@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Appointment - Clinic Admin')" />
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div>
+    <h2>Manage Appointments</h2>
+
+    <a th:href="@{/appointments/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
+    <a th:href="@{/appointments/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+
+  </div>
+
+  <div th:replace="fragments :: search_form('/appointments/page/1')" />
+
+  <div class="full-details">
+    <table class="table table-bordered table-striped table-hover table-responsive-xl">
+      <thead class="thead-dark">
+      <tr>
+        <th>ID</th>
+
+<!--        </th>-->
+        <th>Booking Date</th>
+        <th>Doctor</th>
+        <th>Customer</th>
+        <th>Created Date</th>
+        <th>Created By</th>
+        <th>Modified Date</th>
+        <th>Modified By</th>
+        <th>Booking Date</th>
+        <th>Status</th>
+        <th></th>
+        <th></th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="appoint : ${listAppointments}">
+        <td>[[${appoint.id}]]</td>
+
+
+        <td>[[${appoint.bookingDate}]]</td>
+        <td>[[${appoint.doctor.name}]]</td>
+        <td>[[${appoint.customer.name}]]</td>
+        <td>[[${appoint.createdDate}]]</td>
+        <td>[[${appoint.createdBy}]]</td>
+        <td>[[${appoint.modifiedDate}]]</td>
+        <td>[[${appoint.modifiedBy}]]</td>
+        <td>[[${appoint.bookingDate}]]</td>
+        <td>[[${appoint.status}]]</td>
+<!--        <td>-->
+<!--          <div th:replace="fragments :: appointment_status" />-->
+<!--        </td>-->
+        <td>
+          <div th:replace="fragments :: appointment_status(appointment=${appoint})"></div>
+        </td>
+        <td>
+          <div th:replace="fragments :: appointment_actions(appointment=${appoint})" />
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:replace="fragments :: pagination('/appointments', 'appointments')"></div>
+
+  <div th:replace="modal_fragments :: confirm_modal" />
+
+  <div th:replace="fragments :: footer"></div>
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+  moduleURL = "[[@{/appointments}]]";
+
+  $(document).ready(function() {
+    $(".link-delete").on("click", function(e) {
+      e.preventDefault();
+      showDeleteConfirmModal($(this), 'appointment');
+    });
+  });
+</script>
+</body>
+</html>

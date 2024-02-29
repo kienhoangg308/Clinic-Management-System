@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Appointment - Clinic Admin')" />
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div>
+    <h2>Invoice</h2>
+
+  </div>
+
+
+  <div class="full-details">
+    <table class="table table-bordered table-striped table-hover table-responsive-xl">
+      <thead class="thead-dark">
+      <tr>
+
+
+        <!--        </th>-->
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Price</th>
+        <th></th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="customerService : ${appointment.customerServices}">
+
+
+
+        <td>[[${customerService.service.name}]]</td>
+        <td>[[${customerService.totalAmount}]]</td>
+        <td>[[${customerService.service.price}]]</td>
+
+
+
+
+      </tr>
+      <tr class="total">
+        <td colspan="2"></td> <!-- Span over the first two columns -->
+        <td>Total: <span th:text="${totalPrice}">50 PLN</span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div th:replace="modal_fragments :: confirm_modal" />
+
+  <div th:replace="fragments :: footer"></div>
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+  moduleURL = "[[@{/appointments}]]";
+
+  $(document).ready(function() {
+    $(".link-delete").on("click", function(e) {
+      e.preventDefault();
+      showDeleteConfirmModal($(this), 'appointment');
+    });
+  });
+</script>
+</body>
+</html>

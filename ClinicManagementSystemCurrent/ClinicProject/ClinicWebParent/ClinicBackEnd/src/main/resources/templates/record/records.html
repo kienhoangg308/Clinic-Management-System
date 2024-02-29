@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: page_head('Appointment - Clinic Admin')" />
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div>
+    <h2>Manage Record</h2>
+
+<!--    <a th:href="@{/appointments/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>-->
+    <a th:href="@{/appointments/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+
+  </div>
+
+  <div th:replace="fragments :: search_form('/records/page/1')" />
+
+  <div class="full-details">
+    <table class="table table-bordered table-striped table-hover table-responsive-xl">
+      <thead class="thead-dark">
+      <tr>
+        <th>ID</th>
+
+        <!--        </th>-->
+        <th>Doctor</th>
+        <th>Customer</th>
+        <th>Created Date</th>
+        <th>Created By</th>
+        <th>Modified Date</th>
+        <th>Modified By</th>
+<!--        <th>Booking Date</th>-->
+        <th></th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="record : ${listRecords}">
+        <td>[[${record.id}]]</td>
+
+
+        <td>[[${record.appointment.doctor.name}]]</td>
+        <td>[[${record.appointment.customer.name}]]</td>
+        <td>[[${record.createdDate}]]</td>
+        <td>[[${record.createdBy}]]</td>
+        <td>[[${record.modifiedDate}]]</td>
+        <td>[[${record.modifiedBy}]]</td>
+        <td>
+          <div th:replace="fragments :: record_actions" />
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:replace="fragments :: pagination('/records', 'records')"></div>
+
+  <div th:replace="modal_fragments :: confirm_modal" />
+
+  <div th:replace="fragments :: footer"></div>
+
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+  moduleURL = "[[@{/records}]]";
+
+  $(document).ready(function() {
+    $(".link-delete").on("click", function(e) {
+      e.preventDefault();
+      showDeleteConfirmModal($(this), 'appointment');
+    });
+  });
+</script>
+</body>
+</html>

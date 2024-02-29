@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments :: page_head(${pageTitle})" />
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div>
+    <h2>Manage Apppointments | [[${pageTitle}]]</h2>
+<!--      <a th:href="@{/invoices/new}">Create new invoice</a>-->
+<!--      <a th:href="@{/invoices/download/2}">Create new invoice</a>-->
+<!--      <a th:href="@{/customerservice/new/appointment/{id}(id=${id})}">Create new invoice</a>-->
+<!--      <a th:href="@{/appointments/{id}/customerservice/new(id=${id})}">Create new invoice for user</a>-->
+<!--      <div th:if="${appointment?.status?.name() == 'APPROVAL'}>-->
+<!--        <a th:href="@{/appointments/{id}/customerservice/view(id=${id})}">Create invoice</a>-->
+<!--      </div>-->
+      <th:block sec:authorize="hasAnyAuthority('Admin', 'Staff')">
+      <div th:if="${appointment?.status?.name() == 'APPROVAL'}">
+          <a th:href="@{/appointments/{id}/customerservice/view(id=${appointment.id})}">Create invoice</a>
+      </div>
+      </th:block>
+
+      <div th:if="${appointment?.status?.name() == 'INVOICED'}">
+          <a th:href="@{/records/new/appointment/{id}(id=${id})}">New Record</a>
+      </div>
+
+
+
+
+
+  </div>
+
+<!--  <form th:action="@{/appointments/save}" method="post" style="max-width: 500px; margin: 0 auto"-->
+<!--        onsubmit="return checkUnique(this)"-->
+<!--        th:object="${appointment}">-->
+  <form th:action="@{/appointments/save}" method="post" style="max-width: 700px; margin: 0 auto"
+        th:object="${appointment}">
+    <input type="hidden" th:field="*{id}" />
+<!--      <input type="hidden" th:field="*{services}" />-->
+    <div class="border border-secondary rounded p-3">
+<!--      <div class="form-group row">-->
+<!--        <label class="col-sm-4 col-form-label">Appointment Code:</label>-->
+<!--        <div class="col-sm-8">-->
+<!--          <input type="text" class="form-control" th:field="*{appointmentCode}" required minlength="3" maxlength="128"  />-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Customer:</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" th:field="*{customer.email}" required minlength="3" maxlength="128"  />
+        </div>
+      </div>
+
+<!--      <div class="form-group row">-->
+<!--        <label class="col-sm-4 col-form-label">Doctor:</label>-->
+<!--        <div class="col-sm-8">-->
+<!--          <input type="text" class="form-control" th:field="*{doctor.firstName}" required minlength="3" maxlength="128"  />-->
+<!--        </div>-->
+<!--      </div>-->
+
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Appointment Date:</label>
+            <div class="col-sm-8">
+                <input type="date" th:field="*{bookingDate}" class="form-control" required />
+            </div>
+        </div>
+
+
+
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Specialization:</label>
+            <div class="col-sm-8">
+                <select th:field="*{specialization}" class="form-control" required>
+                    <th:block th:each="specialization : ${listSpecializations}">
+                        <option th:value="${specialization.id}">[[${specialization.name}]]</option>
+                    </th:block>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Doctor:</label>
+            <div class="col-sm-8">
+                <select th:field="*{doctor}" class="form-control" required>
+
+                </select>
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Select one or more services:</label>
+            <div class="col-sm-8">
+                <select class="form-control" th:field="*{services}" multiple required
+                        style="resize: vertical; height: 200px">
+
+
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Chosen services:</label>
+            <div class="col-sm-8">
+
+                <div id="chosenServices">
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+<!--        <div class="form-group row">-->
+<!--            <label class="col-sm-4 col-form-label">Service:</label>-->
+<!--            <div class="col-sm-8">-->
+<!--                <select th:field="*{services}" class="form-control" >-->
+
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <button type="button" th:onclick="selectServices(${appointment.id})">Select Service</button>-->
+
+<!--        <button type="button" th:onclick="'selectServices(' + ${appointment.id} + ')'">Select Service</button>-->
+<!--        <button type="button" th:data-appointment-id="${appointment.id}" onclick="selectServices(this.getAttribute('data-appointment-id'))">Select Service</button>-->
+
+
+
+
+        <div class="text-center">
+<!--            <div th:if="${createNew}" class="text-center">-->
+<!--                <input type="submit" value="Save" class="btn btn-primary m-3" />-->
+<!--            </div>-->
+<!--            <div th:if="${appointment?.status?.name() == 'PENDING'}" class="text-center">-->
+<!--                <input type="submit" value="Save" class="btn btn-primary m-3" />-->
+<!--            </div>-->
+            <button type="submit" th:if="${createNew}" class="btn btn-primary btn-md m-1">Save</button>
+            <button type="submit" th:if="${appointment?.status?.name() == 'PENDING'}" class="btn btn-primary btn-md m-1">Save</button>
+            <button type="button" th:if="${createNew}" class="btn btn-secondary btn-md m-1" id="buttonCancel">Cancel</button>
+
+        </div>
+
+
+    </div>
+  </form>
+
+    <div class="modal fade" id="detailModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Select services</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-bordered" id="serviceList">
+                        <thead>
+                        <tr>
+                            <th>Select Services</th>
+                            <th>Service</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    <input type="hidden" id="appointmentId" name="appointmentId" th:value="${appointment.id}">
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnAssignService">Add Service</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <div th:replace="modal_fragments :: modal_dialog"></div>
+
+  <div th:replace="fragments :: footer"></div>
+
+</div>
+<script type="text/javascript">
+    moduleURL = "[[@{/appointments}]]";
+    specializationModuleURL = "[[@{/specializations}]]";
+    appointmentModuleURL= "[[@{/appointments}]]";
+
+    dropdownSpecializations = $("#specialization");
+    divChosenServices = $("#chosenServices");
+    dropdownDoctors = $("#doctor");
+    dropdownServices = $("#services")
+
+    let appointmentId = $('#appointmentId').val();
+
+
+    $(document).ready(function() {
+        dropdownSpecializations.change(function() {
+            dropdownDoctors.empty();
+            dropdownServices.empty();
+            getServices();
+            getDoctors();
+
+        });
+
+        // dropdownCategories.change(function(){
+        //     dropdownServices.empty();
+        //     getServices();
+        // });
+
+        dropdownServices.change(function() {
+            divChosenServices.empty();
+            showChosenServices();
+        });
+
+
+
+        getServices();
+        getDoctors();
+
+
+    });
+
+
+    function showChosenServices() {
+        dropdownServices.children("option:selected").each(function() {
+            selectedService = $(this);
+            serId = selectedService.val();
+            serName = selectedService.text();
+
+            //alert(serId + ' : ' + serName);
+
+
+            divChosenServices.append("<span class='badge badge-secondary m-1'>" + serName + "</span>");
+        });
+
+    }
+
+    function selectServices(appointmentId){
+        console.log("Appointment ID:", appointmentId);
+        $('#detailModal').modal();
+        //alert(appointmentId);
+        loadService(appointmentId);
+    }
+
+    // function loadService(appointmentId){
+    //     specializationId = dropdownSpecializations.val();
+    //     url = appointmentModuleURL + "/" + appointmentId + "/specialization/" + specializationId + "/select/services";
+    //
+    //     //alert(url);
+    //     var row = '';
+    //     $.get(url, function(responseJson) {
+    //         $.each(responseJson, function(index, item) {
+    //             row += '<tr>';
+    //             row += '<td class="text-center"><input type="checkbox" value=' +item.id + ' id="checkbox_' + item.id+ '" class="check-box-element" ' + item.checked + '/></td>';
+    //             row += '<td class="text-center">' + item.name + '</td>';
+    //             row += '</tr>';
+    //         });
+    //         $('#serviceList tbody').html(row);
+    //
+    //     });
+    // }
+
+    $('#btnAssignService').click(function (e) {
+        e.preventDefault();
+        var data = {};
+
+        var serviceIds = $('#serviceList').find('tbody input[type=checkbox]:checked').map(function () {
+            return $(this).val();
+        }).get();
+        data['serviceIds'] = serviceIds;
+        data['appointmentId'] = appointmentId;
+        // alert(data['serviceIds']);
+        // alert(data['appointmentId']);
+        console.log('get all data');
+        assignService(data);
+    });
+
+    function assignService(data) {
+        console.log('come to assign');
+        var csrfToken = $("input[name='_csrf']").val(); // Retrieve CSRF token value
+        $.ajax({
+            type: "POST",
+            url: "/ClinicAdmin/appointments/assignment",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken); // Include CSRF token as header
+            },
+            success: function (response) {
+                console.log('success');
+                window.location.href = "/ClinicAdmin/appointments/edit/" + appointmentId;
+            },
+            error: function (response) {
+                console.log('failed');
+                console.log(response);
+            }
+
+        });
+    }
+
+    function getServices() {
+        specializationId = dropdownSpecializations.val();
+        url = specializationModuleURL + "/" + specializationId + "/services";
+
+        $.get(url, function(responseJson) {
+            $.each(responseJson, function(index, service) {
+                console.log(service.name);
+                $("<option>").val(service.id).text(service.name).appendTo(dropdownServices);
+            });
+        });
+    }
+
+
+    function getDoctors() {
+        specializationId = dropdownSpecializations.val();
+        url = specializationModuleURL + "/" + specializationId + "/doctors";
+
+        $.get(url, function(responseJson) {
+            $.each(responseJson, function(index, doctor) {
+                console.log(doctor.name);
+                $("<option>").val(doctor.id).text(doctor.name).appendTo(dropdownDoctors);
+            });
+        });
+    }
+
+
+
+
+
+
+
+</script>
+<script th:src="@{/js/common_form.js}"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
+
+  <title>[[${title}]]</title>
+
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
+  <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" ></script>
+  <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" ></script>
+  <script type="text/javascript" th:src="@{/js/common.js}" ></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div th:replace="navigation :: menu"></div>
+  <div>
+    <h2>Invoice</h2>
+    <a th:href="@{/invoices/appointment/download/{id}(id=${appointment.id})}">Export invoice</a>
+
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h3>Patient Details</h3>
+      <p><strong>Full Name:</strong> <span th:text="${appointment.customer.lastName + ' ' + appointment.customer.firstName}"></span></p>
+      <p><strong>Email:</strong> <span th:text="${appointment.customer.email}"></span></p>
+      <p><strong>Address:</strong> <span th:text="${appointment.customer.addressLine}"></span></p>
+    </div>
+    <div class="col-md-6">
+      <h3>&nbsp;</h3>
+      <p><strong>Date of Birth:</strong> <span th:text="${#dates.format(appointment.customer.dateOfBirth, 'dd/MM/yyyy')}"></span></p>
+      <p><strong>Gender:</strong> <span th:text="${appointment.customer.gender}"></span></p>
+      <p><strong>Phone Number:</strong> <span th:text="${appointment.customer.phoneNumber}"></span></p>
+    </div>
+  </div>
+
+
+  <div class="full-details">
+
+
+    <table class="table table-bordered table-striped table-hover table-responsive-xl">
+      <thead class="thead-dark">
+      <tr>
+
+
+        <!--        </th>-->
+        <th>Name</th>
+        <th>Total Amount Of Session</th>
+        <th>Price</th>
+
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="customerService : ${appointment.customerServices}">
+
+
+
+        <td>[[${customerService.service.name}]]</td>
+        <td>[[${customerService.totalAmount}]]</td>
+        <td>[[${customerService.service.price}]]</td>
+
+
+
+
+      </tr>
+      <tr class="total">
+        <td colspan="2"></td> <!-- Span over the first two columns -->
+        <td>Total: <span th:text="${totalPrice}">50 PLN</span></td>
+      </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+
+</div>
+
+</body>
+</html>
